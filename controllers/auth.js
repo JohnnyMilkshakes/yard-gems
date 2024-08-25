@@ -17,7 +17,7 @@ export const signIn = async (req, res) => {
           process.env.JWT_SECRET
         );
 
-        res.status(200).json({ token });
+        res.status(200).json({ user, token });
 
       } else {
 
