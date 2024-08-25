@@ -1,16 +1,11 @@
 import User from "../models/user.js";
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken";
 
-export const getUsers = async (req, res) => {
-  try {
-    let users = await User.find();
-    res.json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
-  }
-};
 
-export const getUser = async (req, res) => {
+const SALT_LENGTH = 12;
+
+export const signIn = async (req, res) => {
     try {
 
       const user = await User.findOne({ username: req.body.username });
@@ -35,13 +30,14 @@ export const getUser = async (req, res) => {
     }
 };
 
-export const createUser = async (req, res) => {
+export const signUp = async (req, res) => {
     try {
         // Check if the username is already taken
         const userInDatabase = await User.findOne({ username: req.body.username });
         if (userInDatabase) {
           return res.json({ error: 'Username already taken.' });
         }
+        
         // Create a new user with hashed password
         const user = await User.create({
           username: req.body.username,
@@ -56,31 +52,4 @@ export const createUser = async (req, res) => {
         res.status(400).json({ error: error.message });
       }
 
-};
-
-export const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await User.findByIdAndUpdate(id, req.body);
-        res.status(201).json(user);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message });
-    }
-};
-
-export const deleteUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await User.findByIdAndDelete(id);
-
-    if (deleted) {
-      return res.status(200).send("User Deleted!");
-    }
-
-    throw new Error("User not found");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
-  }
 };

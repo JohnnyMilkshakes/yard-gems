@@ -5,7 +5,6 @@ const router = Router();
 
 router.get("/", controllers.getUsers);
 router.get("/:id", controllers.getUser);
-router.post("/signup", controllers.createUser);
 router.put("/:id", controllers.updateUser);
 router.delete("/:id", controllers.deleteUser);
 

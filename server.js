@@ -1,34 +1,27 @@
-import dotenv from 'dotenv'
-import express from 'express'
-import cors from 'cors'
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
 import logger from "morgan";
 import chalk from "chalk";
+dotenv.config();
 
 import db from "./db/connection.js";
-import testJWTRouter from './controllers/test-jwt'
-import usersRouter from './controllers/users'
-import profilesRouter from './controllers/profiles'
+import routes from "./routes/index.js";
 
-dotenv.config();
 const server = express();
-const PORT = 3000;
+const PORT = process.env.PORT 
 
-app.use(express.json());
-app.use(cors());
-app.use(logger("dev"));
+server.use(express.json());
+server.use(cors());
+server.use(logger("dev"));
 
-server.use('/profiles', profilesRouter);
-server.use('/test-jwt', testJWTRouter);
-server.use('/users', usersRouter);
-
-app.use("/api", routes)
-// Routes go here
+server.use("/", routes);
 
 db.on("connected", () => {
-    console.clear();
-    console.log(chalk.blue("Connected to MongoDB!"));
-  
-    app.listen(PORT, () => {
-      console.log(`Express server running on port: ${PORT}`);
-    });
+  console.clear();
+  console.log(chalk.green("Connected to MongoDB!"));
+
+  server.listen(PORT, () => {
+    console.log(`Express server running on port: ${PORT}`);
   });
+});

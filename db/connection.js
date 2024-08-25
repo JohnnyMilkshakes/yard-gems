@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import chalk from "chalk";
+import dotenv from "dotenv";
+dotenv.config();
 
 mongoose.set("returnOriginal", false)
 
-mongoose.connect("mongodb://127.0.0.1:27017/yard").catch((err) => {
+mongoose.connect(process.env.MONGODB_URI).catch((err) => {
   console.log(`Error connection to MongoDB: ${err.message}`);
 });
 
