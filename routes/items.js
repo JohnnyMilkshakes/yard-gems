@@ -9,6 +9,6 @@ router.post("/:userId", verifyToken, identityCheck, controllers.createItem);
 router.get("/", controllers.getItems);
 router.get("/:itemId", controllers.getItem);
 router.put("/:userId/:itemId", verifyToken, identityCheck, controllers.updateItem);
-router.delete("/userId/:itemId", verifyToken, identityCheck, controllers.deleteItem);
+router.delete("/:userId/:itemId", verifyToken, identityCheck, controllers.deleteItem);
 
 export default router;
