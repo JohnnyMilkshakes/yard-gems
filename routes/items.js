@@ -5,10 +5,10 @@ import identityCheck from "../middleware/identity-check.js";
 
 const router = Router();
 
-router.post("/", controllers.createItem);
+router.post("/:userId", verifyToken, identityCheck, controllers.createItem);
 router.get("/", controllers.getItems);
 router.get("/:itemId", controllers.getItem);
-router.put("/:itemId", controllers.updateItem);
-router.delete("/:itemId", controllers.deleteItem);
+router.put("/:userId/:itemId", verifyToken, identityCheck, controllers.updateItem);
+router.delete("/userId/:itemId", verifyToken, identityCheck, controllers.deleteItem);
 
 export default router;

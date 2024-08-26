@@ -1,40 +1,36 @@
 import Item from "../models/item.js";
-
+import User from "../models/user.js";
 
 export const getItem = async (req, res) => {
-    try {
-
-
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+  try {
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const getItems = async (req, res) => {
-    try {
-
-
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+  try {
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const createItem = async (req, res) => {
-    try {
-
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-
+    req.body.itemOwner = req.params.userId
+  try {
+    const newItem = await Item.create(req.body)
+    res.status(201).json(newItem)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const updateItem = async (req, res) => {
-    try {
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message });
-    }
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const deleteItem = async (req, res) => {
