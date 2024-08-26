@@ -11,62 +11,32 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-    try {
+  try {
+    const user = await User.findById(req.params.id);
 
-      const user = await User.findOne({ username: req.body.username });
-
-      if (user && bcrypt.compareSync(req.body.password, user.password)) {
-
-        const token = jwt.sign(
-          { username: user.username, _id: user._id },
-          process.env.JWT_SECRET
-        );
-
-        res.status(200).json({ token });
-
-      } else {
-
-        res.status(401).json({ error: 'Invalid username or password.' });
-
-      }
-    } catch (error) {
-
-      res.status(400).json({ error: error.message });
+    if (user) {
+      res.status(200).json({ user });
+    } else {
+      res.status(401).json({ error: "Not found" });
     }
-};
-
-export const createUser = async (req, res) => {
-    try {
-        // Check if the username is already taken
-        const userInDatabase = await User.findOne({ username: req.body.username });
-        if (userInDatabase) {
-          return res.json({ error: 'Username already taken.' });
-        }
-        // Create a new user with hashed password
-        const user = await User.create({
-          username: req.body.username,
-          password: bcrypt.hashSync(req.body.password, SALT_LENGTH),
-        });
-        const token = jwt.sign(
-          { username: user.username, _id: user._id },
-          process.env.JWT_SECRET
-        );
-        res.status(201).json({ user, token });
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await User.findByIdAndUpdate(id, req.body);
-        res.status(201).json(user);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message });
-    }
+  try {
+    const { id } = req.params;
+
+    // filter out the password to prevent accidental overwrite
+    const {password, ...filteredBody} = req.body
+
+    const user = await User.findByIdAndUpdate(id, filteredBody);
+    res.status(201).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const deleteUser = async (req, res) => {
