@@ -6,7 +6,7 @@ async function  identityCheck(req, res, next) {
     const user = await User.findById(req.params.userId);
 
     // check to ensure the user ID of the auth token matches the ID found in the request
-    if (req.user._id !== req.params.id){ 
+    if (req.user._id !== req.params.userId){ 
         return res.status(401).json({ error: "Unauthorized"})
     }
 

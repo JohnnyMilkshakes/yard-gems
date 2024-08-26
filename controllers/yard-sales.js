@@ -1,4 +1,5 @@
 import YardSale from "../models/yard-sale.js";
+import User from "../models/user.js";
 
 
 export const getYardSale = async (req, res) => {
