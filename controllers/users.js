@@ -12,7 +12,7 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.userId);
 
     if (user) {
       res.status(200).json({ user });
@@ -26,12 +26,12 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
 
     // filter out the password to prevent accidental overwrite
     const {password, ...filteredBody} = req.body
 
-    const user = await User.findByIdAndUpdate(id, filteredBody);
+    const user = await User.findByIdAndUpdate(userId, filteredBody);
     res.status(201).json(user);
   } catch (error) {
     console.log(error);
@@ -41,8 +41,8 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await User.findByIdAndDelete(id);
+    const { userId } = req.params;
+    const deleted = await User.findByIdAndDelete(userId);
 
     if (deleted) {
       return res.status(200).send("User Deleted!");
