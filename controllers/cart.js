@@ -1,5 +1,5 @@
 import Cart from "../models/cart.js";
-import ForSaleItem from "../models/forSaleItem.js"; // Assuming you have a model for items for sale
+// import ForSaleItem from "../models/forSaleItem.js"; // Assuming you have a model for items for sale
 import User from "../models/user.js";
 
 // Get the cart for the logged-in user
