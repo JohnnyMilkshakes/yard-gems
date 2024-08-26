@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRoutes);
 router.use("/users", usersRoutes);
-router.use("/cart", verifyToken, cartRoutes);
+router.use("/cart",  cartRoutes);
 
 
 export default router;
