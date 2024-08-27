@@ -1,53 +1,61 @@
 import YardSale from "../models/yard-sale.js";
-import User from "../models/user.js";
-
 
 export const getYardSale = async (req, res) => {
-    try {
+  try {
+    const yardSale = await YardSale.findById(req.params.yardId);
 
-
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+    if (yardSale) {
+      res.status(200).json({ yardSale });
+    } else {
+      res.status(401).json({ error: "Not found" });
     }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const getYardSales = async (req, res) => {
-    try {
-
-
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+  try {
+    let yardSales = await YardSale.find();
+    res.json(yardSales);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const createYardSale = async (req, res) => {
-    try {
+  req.body.yardOwner = req.params.userId;
 
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-
+  try {
+    const newYardSale = await YardSale.create(req.body);
+    res.status(201).json(newYardSale);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 export const updateYardSale = async (req, res) => {
-    try {
+  try {
+    const { yardId } = req.params;
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message });
-    }
+    const updatedYardSale = await YardSale.findByIdAndUpdate(yardId, req.body);
+    res.status(201).json(updatedYardSale);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const deleteYardSale = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await YardSale.findByIdAndDelete(id);
+    const { yardId } = req.params;
+    const deleted = await YardSale.findByIdAndDelete(yardId);
 
     if (deleted) {
-      return res.status(200).send("Cart Deleted!");
+      return res.status(200).send("Yard Sale Deleted!");
     }
 
-    throw new Error("Cart not found");
+    throw new Error("Yard Sale not found");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
