@@ -1,4 +1,5 @@
 import YardSale from "../models/yard-sale.js";
+import User from "../models/user.js";
 
 export const getYardSale = async (req, res) => {
   try {
@@ -27,7 +28,14 @@ export const createYardSale = async (req, res) => {
   req.body.yardOwner = req.params.userId;
 
   try {
+    let user = await User.findById(req.params.userId);
+
     const newYardSale = await YardSale.create(req.body);
+
+    user.yardSale = newYardSale._id
+    
+    user.save()
+
     res.status(201).json(newYardSale);
   } catch (error) {
     res.status(400).json({ error: error.message });

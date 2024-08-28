@@ -12,7 +12,17 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId).populate({
+        path: 'cart',
+        populate: {
+          path: 'itemsInCart',
+        }
+      }).populate({
+        path: 'yardSale',
+        populate: {
+          path: 'itemsForSale',
+        }
+      });
 
     if (user) {
       res.status(200).json({ user });

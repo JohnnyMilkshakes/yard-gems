@@ -1,14 +1,15 @@
 import Cart from "../models/cart.js";
 import Item from "../models/item.js";
 import User from "../models/user.js";
+import mongoose from "mongoose";
 
 // Get Cart by User ID
 export const getCart = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId ).populate("cart");
+    const cart = await Cart.findById(req.params.cartId)//.populate('itemsInCart')
 
-    if (user) {
-      res.status(200).json(user.cart);
+    if (cart) {
+      res.status(200).json(cart);
     } else {
       res.status(404).json({ error: "Cart not found" });
     }
@@ -32,7 +33,11 @@ export const createCart = async (req, res) => {
       totalCost: 0,
     });
 
-    await User.findByIdAndUpdate(req.params.userId, { cart: newCart._id });
+    let user = await User.findById(req.params.userId);
+
+    user.cart = newCart._id
+
+    user.save()
 
     res.status(201).json(newCart);
   } catch (error) {
@@ -86,46 +91,57 @@ export const addItemToCart = async (req, res) => {
   }
 };
 
-// Update Cart (Update quantity of items)
 export const updateCart = async (req, res) => {
-  try {
-    const { userId, itemId } = req.params;
-    const { quantity } = req.body;
-
-    const cart = await Cart.findOne({ cartOwner: userId });
-    const item = await Item.findById(itemId);
-
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
-
-    if (!item) {
-      return res.status(404).json({ error: "Item not found" });
-    }
-
-    // Find the item in the cart
-    const existingItemIndex = cart.itemsInCart.findIndex(
-      (cartItem) => cartItem._id.toString() === itemId
-    );
-
-    if (existingItemIndex > -1) {
-      const existingItem = cart.itemsInCart[existingItemIndex];
-
-      // Adjust the total cost
-      cart.totalCost -= existingItem.quantity * item.price;
-      existingItem.quantity = quantity;
-      cart.totalCost += quantity * item.price;
-
+    try {
+      const { userId, cartId } = req.params;
+      let { itemsInCart } = req.body;
+  
+      console.log("Received itemsInCart:", itemsInCart);
+  
+      const validatedItems = [];
+  
+      // Check if each item exists in the database
+      for (const itemId of itemsInCart) {
+        // Check if the itemId is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(itemId)) {
+          console.log(`Checking item ID: ${itemId}`);
+          // Check if the item exists in the database
+          const itemExists = await Item.findById(itemId);
+          if (itemExists) {
+            console.log(`Item found: ${itemId}`);
+            validatedItems.push(itemExists._id); // Add the ObjectId to the validatedItems array
+          } else {
+            console.log(`Item not found: ${itemId}`);
+          }
+        } else {
+          console.log(`Invalid ObjectId: ${itemId}`);
+          return res.status(400).json({ error: `Invalid item ID: ${itemId}` });
+        }
+      }
+  
+      console.log("Validated items:", validatedItems);
+  
+      // Find the cart by ID
+      const cart = await Cart.findById(cartId);
+  
+      if (!cart) {
+        return res.status(404).json({ error: "Cart not found" });
+      }
+  
+      // Update the cart's itemsInCart with the validated items
+      cart.itemsInCart = validatedItems;
+  
+      // Save the updated cart
       await cart.save();
-      res.status(200).json(cart);
-    } else {
-      res.status(404).json({ error: "Item not found in cart" });
+  
+      // Return the updated cart
+      return res.status(200).json(cart);
+    } catch (error) {
+      // Handle any unexpected errors
+      console.error("Error updating cart:", error);
+      return res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
+  };
 // Delete Item from Cart
 export const deleteItemFromCart = async (req, res) => {
   try {
