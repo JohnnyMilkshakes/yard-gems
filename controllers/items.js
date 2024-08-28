@@ -1,6 +1,4 @@
 import Item from "../models/item.js";
-import User from "../models/user.js";
-import YardSale from "../models/yard-sale.js";
 
 export const getItem = async (req, res) => {
   try {
@@ -29,15 +27,8 @@ export const getItems = async (req, res) => {
 export const createItem = async (req, res) => {
     req.body.itemOwner = req.params.userId
   try {
-    let user = await User.findById(req.params.userId)
-
-    let yardSale = await YardSale.findById(user.yardSale)
 
     const newItem = await Item.create(req.body)
-
-    yardSale.itemsForSale.push(newItem)
-
-    yardSale.save()
 
     res.status(201).json(newItem)
   } catch (error) {
