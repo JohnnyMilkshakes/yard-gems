@@ -6,7 +6,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
     yardSale: { type: Schema.Types.ObjectId, ref: 'YardSale' },
-    seller: { type: Boolean, default: false },
+    items: [{type: Schema.Types.ObjectId, ref: 'Item'}]
   });
 
 const User = mongoose.model("User", userSchema);
