@@ -1,4 +1,5 @@
 import Item from "../models/item.js";
+import User from "../models/user.js";
 
 export const getItem = async (req, res) => {
   try {
@@ -27,8 +28,13 @@ export const getItems = async (req, res) => {
 export const createItem = async (req, res) => {
     req.body.itemOwner = req.params.userId
   try {
+    let user = await User.findById(req.params.userId);
 
     const newItem = await Item.create(req.body)
+
+    user.items.push(newItem._id)
+
+    user.save()
 
     res.status(201).json(newItem)
   } catch (error) {
