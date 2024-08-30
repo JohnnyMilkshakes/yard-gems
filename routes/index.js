@@ -18,7 +18,4 @@ router.use("/cart",  cartRoutes);
 router.use("/yard-sales", yardSalesRoutes);
 router.use("/items", itemsRoutes);
 
-
-
-
 export default router;

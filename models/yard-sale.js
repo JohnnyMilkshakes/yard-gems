@@ -6,7 +6,7 @@ const yardSaleSchema = new Schema({
     name: { type: String, required: true },
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
-    physicalDisplayDates: [{ type: String, required: true }],
+    physicalDisplayDates: [{ type: String }],
     itemsForSale: [{ type: Schema.Types.ObjectId, ref: 'Item' }]
   });
 

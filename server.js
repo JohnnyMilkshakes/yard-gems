@@ -8,6 +8,8 @@ dotenv.config();
 import db from "./db/connection.js";
 import routes from "./routes/index.js";
 
+import { runSeed } from "./seed/seedfile.js";
+
 const server = express();
 const PORT = process.env.PORT 
 
@@ -20,6 +22,8 @@ server.use("/", routes);
 db.on("connected", () => {
   console.clear();
   console.log(chalk.green("Connected to MongoDB!"));
+
+  // runSeed()
 
   server.listen(PORT, () => {
     console.log(`Express server running on port: ${PORT}`);
